@@ -35,11 +35,15 @@ public class IntegrationTests {
 
     @Test
     public void convertUrlTest() throws Exception {
+
+        //given
         String originUrl = "https://www.naver.com";
         UrlEntity urlEntity = new UrlEntity().buildWithUrl(originUrl);
 
+        //when
         ResultActions resultActions = convertUrlByAPI(urlEntity.getOriginUrl());
 
+        //then
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("success").value(true));
