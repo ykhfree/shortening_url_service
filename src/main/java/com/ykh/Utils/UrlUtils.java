@@ -1,5 +1,7 @@
 package com.ykh.Utils;
 
+import java.util.regex.Pattern;
+
 public class UrlUtils {
 
     static final int RADIX = 62;

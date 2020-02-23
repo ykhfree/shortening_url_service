@@ -1,5 +1,6 @@
 package com.ykh.shorteningurl;
 
+import com.google.gson.Gson;
 import com.ykh.Utils.UrlUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,12 +41,14 @@ public class ConvertUrlController {
     @PostMapping("/service/convertUrl")
     public ResponseEntity<String> converingtUrl(@RequestParam("originUrl") String originUrl) {
 
-        String result;
+        ResultVO resultVO = new ResultVO();
+        Gson gson = new Gson();
 
         try {
 
             if (StringUtils.isEmpty(originUrl)) {
-                result = "urlempty";
+                resultVO.setSuccess(false);
+                resultVO.setResultMsg("urlEmpty");
             } else {
 
                 //originUrl이 DB에 있는지 확인
@@ -54,12 +57,20 @@ public class ConvertUrlController {
                 if (urlEntity == null) {
                     urlEntity = new UrlEntity().buildWithUrl(originUrl);
                     urlRepository.save(urlEntity);
+                } else {
+                    long count = urlEntity.getCount();
+                    urlEntity.setCount(++count);
+
+                    urlRepository.save(urlEntity);
                 }
 
-                result = prefixUrl + UrlUtils.encoding(urlEntity.getSeq());
+                resultVO.setSuccess(true);
+                resultVO.setResultMsg(prefixUrl + UrlUtils.encoding(urlEntity.getSeq()));
             }
 
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            String json = gson.toJson(resultVO);
+
+            return new ResponseEntity<>(json, HttpStatus.OK);
 
         } catch (Exception e) {
 
@@ -96,11 +107,6 @@ public class ConvertUrlController {
 
         if(urlEntity.isPresent()) {
             try {
-                long count = urlEntity.get().getCount();
-                urlEntity.get().setCount(++count);
-
-                urlRepository.save(urlEntity.get());
-
                 response.sendRedirect(urlEntity.get().getOriginUrl());
             } catch (IOException e) {
                 e.printStackTrace();
