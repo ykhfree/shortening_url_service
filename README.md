@@ -6,14 +6,17 @@ URL을 입력받아 짧게 줄여주고, Shortening된 URL을 입력하면 원�
 
 1. 설치 및 빌드 방법 (리눅스 기준)
    - 해당 프로젝트는 gradle wrapper로 구성되어 있기 때문에 아래의 명령어를 통해 프로젝트를 빌드할 수 있다.    
-   _$ ./gradlew build_
-   
+   ```
+   $ ./gradlew build
+   ```
    
    - 그 후 아래의 명령어를 통해 서버구동을 한다.  
-        1. 서버 구동 시 주의사항  
+        1. 주의사항  
           - 8080 포트를 사용하므로 해당 포트가 사용중이면 안됨  
           - H2 내장DB를 메모리가 아닌 파일방식으로 사용하므로 아래 명령어를 실행하는 계정이 jar가 존재하는 폴더의 읽기,쓰기권한을 가져야함.    
-   _java -jar build/libs/shortening_url-1.0.jar_
+   ```
+   java -jar build/libs/shortening_url-1.0.jar
+   ```
   
    
 2. 서비스 이용방법
