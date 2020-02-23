@@ -36,6 +36,7 @@ public class ConvertUrlController {
 
     /**
      * 원본 URL을 축약URL로 변경하는 API
+     * @param originUrl
      * @return
      */
     @PostMapping("/service/convertUrl")
@@ -80,6 +81,7 @@ public class ConvertUrlController {
 
     /**
      * shortening url 리스트 확인
+     * @param model
      * @return
      */
     @GetMapping("/service/urlList")
@@ -94,12 +96,16 @@ public class ConvertUrlController {
 
     /**
      * 축약URL 호출 시 원본URL로 리다이렉트
+     * @param request
+     * @param response
      * @param encodeSeq
      * @return
      */
     @GetMapping("/{encodeSeq}")
     @ResponseBody
-    public ResponseEntity<String> redirectOriginUrl(HttpServletRequest request, HttpServletResponse response, @PathVariable("encodeSeq") String encodeSeq) {
+    public ResponseEntity<String> redirectOriginUrl(HttpServletRequest request,
+                                                    HttpServletResponse response,
+                                                    @PathVariable("encodeSeq") String encodeSeq) {
 
         int seq = UrlUtils.decoding(encodeSeq);
 
