@@ -5,14 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -21,13 +21,64 @@ public class ConvertUrlController {
     @Autowired
     UrlRepository urlRepository;
 
+    private static final String prefixUrl = "http://localhost:8080/";
+
     /**
      * 원본 URL을 축약URL로 변경하는 화면 호출
      * @return
      */
-    @RequestMapping(value = "/service/convertUrl", method = RequestMethod.GET)
+    @GetMapping("/service/convertUrl")
     public String convertUrl() {
+
         return "convertUrl";
+    }
+
+    /**
+     * 원본 URL을 축약URL로 변경하는 API
+     * @return
+     */
+    @PostMapping("/service/convertUrl")
+    public ResponseEntity<String> converingtUrl(@RequestParam("originUrl") String originUrl) {
+
+        String result;
+
+        try {
+
+            if (StringUtils.isEmpty(originUrl)) {
+                result = "urlempty";
+            } else {
+
+                //originUrl이 DB에 있는지 확인
+                UrlEntity urlEntity = urlRepository.findByOriginUrl(originUrl);
+
+                if (urlEntity == null) {
+                    urlEntity = new UrlEntity().buildWithUrl(originUrl);
+                    urlRepository.save(urlEntity);
+                }
+
+                result = prefixUrl + UrlUtils.encoding(urlEntity.getSeq());
+            }
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (Exception e) {
+
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    /**
+     * shortening url 리스트 확인
+     * @return
+     */
+    @GetMapping("/service/urlList")
+    public String urlList(Model model) {
+
+        List<UrlEntity> urlEntities = urlRepository.findAll();
+
+        model.addAttribute("urlEntities", urlEntities);
+
+        return "urlList";
     }
 
     /**
@@ -35,7 +86,7 @@ public class ConvertUrlController {
      * @param encodeSeq
      * @return
      */
-    @RequestMapping(value = "/{encodeSeq}", method = RequestMethod.GET)
+    @GetMapping("/{encodeSeq}")
     @ResponseBody
     public ResponseEntity<String> redirectOriginUrl(HttpServletRequest request, HttpServletResponse response, @PathVariable("encodeSeq") String encodeSeq) {
 
@@ -45,6 +96,11 @@ public class ConvertUrlController {
 
         if(urlEntity.isPresent()) {
             try {
+                long count = urlEntity.get().getCount();
+                urlEntity.get().setCount(++count);
+
+                urlRepository.save(urlEntity.get());
+
                 response.sendRedirect(urlEntity.get().getOriginUrl());
             } catch (IOException e) {
                 e.printStackTrace();

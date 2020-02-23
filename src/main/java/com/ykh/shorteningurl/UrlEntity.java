@@ -18,7 +18,7 @@ public class UrlEntity implements Serializable {
     private String originUrl;
 
     @Column(name = "count")
-    private Long count;
+    private long count;
 
     @Column(name = "insert_date")
     private Date insertDate = new Date();

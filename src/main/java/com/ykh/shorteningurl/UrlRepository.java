@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UrlRepository extends JpaRepository<UrlEntity, Integer> {
+
+    UrlEntity findByOriginUrl(String originUrl);
 }

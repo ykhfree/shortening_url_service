@@ -1,0 +1,41 @@
+<head>
+    <script src="/static/jquery-1.11.0.min.js"></script>
+    <script>
+        function shorteningUrl() {
+            var formData = $("#shortening").serialize();
+
+            if($("#originUrl").val() === '') {
+                alert('원본URL이 비어있습니다. 다시 입력해주세요.');
+                return false;
+            }
+
+            $.ajax({
+                cache : false,
+                url : "/service/convertUrl", // 요기에
+                type : 'POST',
+                data : formData,
+                success : function(data) {
+
+                    if(data === 'urlempty') {
+                        alert('원본URL이 비어있습니다. 다시 입력해주세요.')
+                    } else {
+                        console.log(data);
+                        $("#shorteingUrl").val(data);
+                    }
+                },
+
+                error : function(xhr, status) {
+                    $("#shorteingUrl").val("오류 발생!");
+                    console.error(xhr + " : " + status);
+                }
+            });
+        }
+    </script>
+</head>
+<div class="container">
+    <form id="shortening" name="shortening" method="post">
+        축약대상 URL : <input type="text" id="originUrl" name="originUrl" style="text-align:left; width:600px;" />
+        <input type="button" value="변경" onclick="shorteningUrl(); return false;"><br/><br/><br/>
+        축약결과 : <input type="text" id="shorteingUrl" name="shorteingUrl" style="text-align:left; width:300px;" disabled/>
+    </form>
+</div>

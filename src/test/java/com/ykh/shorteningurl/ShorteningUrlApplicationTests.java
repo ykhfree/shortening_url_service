@@ -19,7 +19,7 @@ class ShorteningUrlApplicationTests {
 
     @Test
     void UrlConvertTest() {
-        UrlEntity urlEntity = new UrlEntity().buildWithUrl("https://www.naver.com");
+        UrlEntity urlEntity = new UrlEntity().buildWithUrl("https://www.nate.com");
 
         //TODO : 주소가 이미 있는지 확인
         urlRepository.save(urlEntity);
