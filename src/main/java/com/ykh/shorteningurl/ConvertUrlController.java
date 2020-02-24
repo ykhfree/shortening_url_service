@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +25,11 @@ public class ConvertUrlController {
     @Autowired
     UrlRepository urlRepository;
 
-    @Value("${prefix.url}")
-    private String prefixUrl;
+    @Value("${prefix.url.localhost}")
+    private boolean useLocalhost;
+
+    @Value("${server.port}")
+    private int serverPort;
 
     /**
      * 원본 URL을 축약URL로 변경하는 화면 호출
@@ -42,10 +47,18 @@ public class ConvertUrlController {
      * @return
      */
     @PostMapping("/service/convertUrl")
-    public ResponseEntity<String> converingtUrl(@RequestParam("originUrl") String originUrl) {
+    public ResponseEntity<String> converingtUrl(@RequestParam("originUrl") String originUrl) throws UnknownHostException {
 
         ResultVO resultVO = new ResultVO();
         Gson gson = new Gson();
+        String prefixUrl = serverPort + "/";
+
+        if(useLocalhost) {
+            prefixUrl = "http://localhost:" + prefixUrl;
+        } else {
+            InetAddress ip = InetAddress.getLocalHost();
+            prefixUrl = "http://" + ip.getHostAddress() + ":" + prefixUrl;
+        }
 
         try {
 
