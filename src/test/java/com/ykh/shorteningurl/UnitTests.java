@@ -5,18 +5,23 @@ import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
+@TestPropertySource(locations ="classpath:/test.properties")
 @Transactional
 @Ignore
 class UnitTests {
+
+    @Autowired
+    Environment env;
 
     @Autowired
     UrlRepository urlRepository;
@@ -48,18 +53,16 @@ class UnitTests {
     @Test
     void insertTest() {
 
-        String originUrl = "https://www.daum.net";
-
-        UrlEntity urlEntity = urlRepository.findByOriginUrl(originUrl);
+        UrlEntity urlEntity = urlRepository.findByOriginUrl(env.getProperty("test.origin.url"));
 
         if(urlEntity == null) {
-            urlEntity = new UrlEntity().buildWithUrl(originUrl);
+            urlEntity = new UrlEntity().buildWithUrl(env.getProperty("test.origin.url"));
             urlRepository.save(urlEntity);
         }
 
         Optional<UrlEntity> urlEntity2 = urlRepository.findById(urlEntity.getSeq());
 
         assertThat(urlEntity2).isNotEmpty();
-        assertEquals(urlEntity2.get().getOriginUrl(), "https://www.daum.net");
+        assertEquals(urlEntity2.get().getOriginUrl(), env.getProperty("test.origin.url"));
     }
 }

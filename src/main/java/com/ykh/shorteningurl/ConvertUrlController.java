@@ -3,6 +3,7 @@ package com.ykh.shorteningurl;
 import com.google.gson.Gson;
 import com.ykh.Utils.UrlUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,8 @@ public class ConvertUrlController {
     @Autowired
     UrlRepository urlRepository;
 
-    private static final String prefixUrl = "http://localhost:8080/";
+    @Value("${prefix.url}")
+    private String prefixUrl;
 
     /**
      * 원본 URL을 축약URL로 변경하는 화면 호출
@@ -116,12 +118,12 @@ public class ConvertUrlController {
                 response.sendRedirect(urlEntity.get().getOriginUrl());
             } catch (IOException e) {
                 e.printStackTrace();
-                return new ResponseEntity<String>("The address move failed....", HttpStatus.OK);
+                return new ResponseEntity<>("The address move failed....", HttpStatus.OK);
             }
         } else {
-            return new ResponseEntity<String>("The address does not exist...", HttpStatus.OK);
+            return new ResponseEntity<>("The address does not exist...", HttpStatus.OK);
         }
 
-        return new ResponseEntity<String>("", HttpStatus.OK);
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 }
