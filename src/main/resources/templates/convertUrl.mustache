@@ -30,7 +30,7 @@
                         }
                         // 그외 오류들 추가 가능
                     } else {
-                        $("#shorteingUrl").val(obj.resultMsg);
+                        $("#shorteingUrl").html(obj.resultMsg);
                     }
                 },
 
@@ -51,6 +51,6 @@
     <form id="shortening" name="shortening" method="post">
         축약대상 URL : <input type="text" id="originUrl" name="originUrl" style="text-align:left; width:600px;" />
         <input type="button" value="변경" onclick="shorteningUrl(); return false;"><br/><br/><br/>
-        축약결과 : <input type="text" id="shorteingUrl" name="shorteingUrl" style="text-align:left; width:300px;" disabled/>
+        축약결과 : <span id="shorteingUrl"></span>
     </form>
 </div>
