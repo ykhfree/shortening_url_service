@@ -35,9 +35,11 @@ class UnitTests {
         int seq1 = 999999999;
         int seq2 = 1245;
         int seq3 = 78848;
+        int seq4 = 2147483647;
         assertEquals(UrlUtils.encoding(seq1), "Pq3pFB");
         assertEquals(UrlUtils.encoding(seq2), "FU");
         assertEquals(UrlUtils.encoding(seq3), "ufU");
+        assertEquals(UrlUtils.encoding(seq4), "BlmUVC");
     }
 
     @Test
@@ -45,9 +47,11 @@ class UnitTests {
         String shortUrl1 = "Pq3pFB";
         String shortUrl2 = "FU";
         String shortUrl3 = "ufU";
+        String shortUrl4 = "BlmUVC";
         assertEquals(UrlUtils.decoding(shortUrl1), 999999999);
         assertEquals(UrlUtils.decoding(shortUrl2), 1245);
         assertEquals(UrlUtils.decoding(shortUrl3), 78848);
+        assertEquals(UrlUtils.decoding(shortUrl4), 2147483647);
     }
 
     @Test
