@@ -25,9 +25,6 @@ public class ConvertUrlController {
     @Autowired
     UrlRepository urlRepository;
 
-    @Value("${prefix.url.localhost}")
-    private boolean useLocalhost;
-
     @Value("${server.port}")
     private int serverPort;
 
@@ -53,12 +50,8 @@ public class ConvertUrlController {
         Gson gson = new Gson();
         String prefixUrl = serverPort + "/";
 
-        if(useLocalhost) {
-            prefixUrl = "http://localhost:" + prefixUrl;
-        } else {
-            InetAddress ip = InetAddress.getLocalHost();
-            prefixUrl = "http://" + ip.getHostAddress() + ":" + prefixUrl;
-        }
+        InetAddress ip = InetAddress.getLocalHost();
+        prefixUrl = "http://" + ip.getHostAddress() + ":" + prefixUrl;
 
         try {
 
