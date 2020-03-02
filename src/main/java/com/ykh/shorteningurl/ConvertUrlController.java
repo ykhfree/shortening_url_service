@@ -48,10 +48,9 @@ public class ConvertUrlController {
 
         ResultVO resultVO = new ResultVO();
         Gson gson = new Gson();
-        String prefixUrl = serverPort + "/";
 
         InetAddress ip = InetAddress.getLocalHost();
-        prefixUrl = "http://" + ip.getHostAddress() + ":" + prefixUrl;
+        String url = "http://" + ip.getHostAddress() + ":" + serverPort + "/";
 
         try {
 
@@ -74,7 +73,7 @@ public class ConvertUrlController {
                 }
 
                 resultVO.setSuccess(true);
-                resultVO.setResultMsg(prefixUrl + UrlUtils.encoding(urlEntity.getSeq()));
+                resultVO.setResultMsg(url + UrlUtils.encoding(urlEntity.getSeq()));
             }
 
             String json = gson.toJson(resultVO);
